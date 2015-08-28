@@ -112,34 +112,6 @@
         <li><span style="background-color: rgba(77,83,96,1)"></span>Dark Grey</li>
       </ol>
     </section>
-    <div ng-controller="DatepickerDemoCtrl">
-        <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>
-
-        <h4>Inline</h4>
-        <div style="display:inline-block; min-height:290px;">
-          <datepicker ng-model="dt" min-date="minDate" show-weeks="true" class="well well-sm" custom-class="getDayClass(date, mode)"></datepicker>
-        </div>
-
-        <h4>Popup</h4>
-        <div class="row">
-            <div class="col-md-6">
-                <p class="input-group">
-                  <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="status.opened" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-                </p>
-            </div>
-
-            <div class="col-md-6">
-                <p class="input-group">
-                  <input type="date" class="form-control" datepicker-popup ng-model="dt" is-open="status.opened" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-                </p>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-6">
                 <label>Format:</label> <select class="form-control" ng-model="format" ng-options="f for f in formats"><option></option></select>
@@ -497,16 +469,18 @@
     </div>
   </footer>
 
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/moment/moment.js"></script>
-  <script src="bower_components/Chart.js/Chart.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="bower_components/rainbow/js/rainbow.min.js"></script>
-  <script src="bower_components/rainbow/js/language/generic.js"></script>
-  <script src="bower_components/rainbow/js/language/html.js"></script>
-  <script src="bower_components/rainbow/js/language/javascript.js"></script>
-  <script src="bower_components/angular-chart.js/angular-chart.js"></script>
-  <script src="bower_components/angular-google-gapi/angular-google-gapi.js"></script>
+  <script src="bower_components/Chart.js/Chart.js"></script>
+  <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
+  <script src="bower_components/angular-google-gapi/angular-google-gapi.min.js"></script>
+  <!-- endbower -->
   <script src="smoothscroll.min.js"></script>
   <script src="app.js"></script>
 </body>
