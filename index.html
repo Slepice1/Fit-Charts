@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Charts</title>
+  <!-- bower:css-->
+  <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css" />
+  <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+  <!-- endbower -->
+</head>
+<body ng-app="graphs" layout="row" ng-controller="LineCtrl">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar class="md-theme-indigo">
+        <h1 class="md-toolbar-tools">Sidenav Left</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+        <md-button ng-click="close()" class="md-primary" hide-gt-md>
+          Close Sidenav Left
+        </md-button>
+        <p hide-md show-gt-md>
+          This sidenav is locked open on your device. To go back to the default behavior,
+          narrow your display.
+        </p>
+      </md-content>
+    </md-sidenav>
+    <div flex layout="column">
+      <md-toolbar class="md-whiteframe-z1">
+        <div class="md-toolbar-tools">
+          <!--<md-button class="md-icon-button" aria-label="Settings">
+            <md-icon class="fa fa-bars fa-lg"></md-icon>
+          </md-button>-->
+          <span>My App's Title</span>
+          <!-- fill up the space between left and right area -->
+          <span flex></span>
+          <md-button>
+            Right Bar Button
+          </md-button>
+        </div>
+      </md-toolbar>
+      <md-content flex layout-padding>
+        <div layout="column" layout-fill layout-align="top center">
+          <p>
+          The left sidenav will 'lock open' on a medium (>=960px wide) device.
+          </p>
+          <p>
+          The right sidenav will focus on a specific child element.
+          </p>
+          <div>
+            <md-button ng-click="toggleLeft()"
+              class="md-primary" hide-gt-md>
+              Toggle left
+            </md-button>
+          </div>
+          <div>
+            <md-button ng-click="toggleRight()"
+              class="md-primary">
+              Toggle right
+            </md-button>
+          </div>
+        </div>
+        <div flex></div>
+      </md-content>
+    </div>
+    <!--<linechart data="data" options="options" mode="" width="" height="500"></linechart>-->
+
+
+  <!-- bower:js -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="bower_components/Chart.js/Chart.js"></script>
+  <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+  <script src="bower_components/angular-google-gapi/angular-google-gapi.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-material/angular-material.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/d3/d3.js"></script>
+  <script src="bower_components/n3-line-chart/build/line-chart.min.js"></script>
+  <!-- endbower -->
+  <script src="app.js"></script>
+</body>
+</html>
