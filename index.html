@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
   <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
   <!-- endbower -->
+  <style media="screen">
+    body {
+      overflow:hidden;
+    }<!---->
+  </style>
 </head>
 <body ng-app="graphs" layout="row" ng-controller="LineCtrl">
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
@@ -17,7 +22,7 @@
       <md-content layout-padding>
         <md-button ng-click="close()" class="md-primary" hide-gt-md>
           Close Sidenav Left
-        </md-button>
+        </md-button><!---->
         <p hide-md show-gt-md>
           This sidenav is locked open on your device. To go back to the default behavior,
           narrow your display.
@@ -33,36 +38,39 @@
           <span>My App's Title</span>
           <!-- fill up the space between left and right area -->
           <span flex></span>
-          <md-button>
-            Right Bar Button
-          </md-button>
         </div>
       </md-toolbar>
-      <md-content flex layout-padding>
-        <div layout="column" layout-fill layout-align="top center">
-          <p>
-          The left sidenav will 'lock open' on a medium (>=960px wide) device.
-          </p>
-          <p>
-          The right sidenav will focus on a specific child element.
-          </p>
-          <div>
-            <md-button ng-click="toggleLeft()"
-              class="md-primary" hide-gt-md>
-              Toggle left
-            </md-button>
+      <md-content flex layout="column" layout-padding layout-margin layout-align="start start">
+        <div>
+          <md-card>
+            <linechart data="data" options="options" mode="" width="" height=""></linechart>
+          </md-card>
+        </div>
+        <div layout="row">
+          <div flex="50">
+            <md-card>
+              <md-card-content>
+                <h4>From:</h4>
+                <md-datepicker ng-model="fromDate" md-placeholder="Enter date" ng-change="waitForApi()"></md-datepicker>
+                <h4>To:</h4>
+                <md-datepicker ng-model="toDate" md-placeholder="Enter date" ng-change="waitForApi()"></md-datepicker>
+              </md-card-content>
+            </md-card>
           </div>
-          <div>
-            <md-button ng-click="toggleRight()"
-              class="md-primary">
-              Toggle right
-            </md-button>
+          <div flex="50">
+            <md-card>
+              <md-card-content>
+                <md-radio-group ng-model="timespan" ng-change="waitForApi()">
+                  <md-radio-button value="day" class="md-primary"> Day </md-radio-button>
+                  <md-radio-button value="week"> Week </md-radio-button>
+                  <md-radio-button value="month"> Month </md-radio-button>
+                </md-radio-group>
+              </md-card-content>
+            </md-card>
           </div>
         </div>
-        <div flex></div>
       </md-content>
     </div>
-    <!--<linechart data="data" options="options" mode="" width="" height="500"></linechart>-->
 
 
   <!-- bower:js -->

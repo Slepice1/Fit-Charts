@@ -54,14 +54,7 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
 
       if dataPerSeries.length
         columnWidth = _u.getBestColumnWidth(axes, dimensions, dataPerSeries, options)
-
-        _u
-          .drawArea(svg, axes, dataPerSeries, options, handlers)
-          .drawColumns(svg, axes, dataPerSeries, columnWidth, options, handlers, dispatch)
-          .drawLines(svg, axes, dataPerSeries, options, handlers)
-
-        if options.drawDots
-          _u.drawDots(svg, axes, dataPerSeries, options, handlers, dispatch)
+        _u.drawData(svg, dimensions, axes, dataPerSeries, columnWidth, options, handlers, dispatch)
 
       if options.drawLegend
         _u.drawLegend(svg, options.series, dimensions, handlers, dispatch)
@@ -70,6 +63,9 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
         _u.createGlass(svg, dimensions, handlers, axes, dataPerSeries, options, dispatch, columnWidth)
       else if options.tooltip.mode isnt 'none'
         _u.addTooltips(svg, dimensions, options.axes)
+
+      _u.createFocus(svg, dimensions, options)
+      _u.setZoom(svg, dimensions, axes, dataPerSeries, columnWidth, options, handlers, dispatch)
 
     updateEvents = ->
 
@@ -88,6 +84,21 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
         dispatch.on('hover', scope.hover)
       else
         dispatch.on('hover', null)
+
+      if scope.mouseenter
+        dispatch.on('mouseenter', scope.mouseenter)
+      else
+        dispatch.on('mouseenter', null)
+
+      if scope.mouseover
+        dispatch.on('mouseover', scope.mouseover)
+      else
+        dispatch.on('mouseover', null)
+
+      if scope.mouseout
+        dispatch.on('mouseout', scope.mouseout)
+      else
+        dispatch.on('mouseout', null)
 
       # Deprecated: this will be removed in 2.x
       if scope.oldfocus
@@ -112,9 +123,15 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
     scope.$watch('data', scope.redraw, true)
     scope.$watch('options', scope.redraw , true)
     scope.$watchCollection('[click, hover, focus, toggle]', updateEvents)
+    scope.$watchCollection('[mouseenter, mouseover, mouseout]', updateEvents)
 
     # Deprecated: this will be removed in 2.x
     scope.$watchCollection('[oldclick, oldhover, oldfocus]', updateEvents)
+
+    # Clean up the listeners when directive is destroyed
+    scope.$on('$destroy', () ->
+      $window.removeEventListener('resize', window_resize)
+    )
 
     return
 
@@ -126,7 +143,8 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
       # Deprecated: this will be removed in 2.x
       oldclick: '=click',  oldhover: '=hover',  oldfocus: '=focus',
       # Events
-      click: '=onClick',  hover: '=onHover',  focus: '=onFocus',  toggle: '=onToggle'
+      click: '=onClick',  hover: '=onHover',  focus: '=onFocus',  toggle: '=onToggle',
+      mouseenter: '=onMouseenter',  mouseover: '=onMouseover',  mouseout: '=onMouseout'
     template: '<div></div>'
     link: link
   }

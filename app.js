@@ -111,14 +111,16 @@
 
 
   app.controller('LineCtrl', function ($scope, $timeout, FitService, GApi, GAuth) {
-
+    $scope.fromDate = new Date();
+    $scope.toDate = new Date();
+    $scope.timespan = "week";
     $scope.waitForApi = function () {
       GAuth.checkAuth().then(
         function () {
-          var fromDate = moment().subtract(3, 'month').startOf('month').startOf('day');
-          var toDate = moment().subtract(1, 'month').endOf('month').endOf('day');
+          var fromDate = moment($scope.fromDate).startOf($scope.timespan);
+          var toDate = moment($scope.toDate).endOf($scope.timespan);
           var dataType = 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps';
-          FitService.getData(fromDate, toDate, moment.duration(1, 'week'), dataType,
+          FitService.getData(fromDate, toDate, moment.duration(1, $scope.timespan), dataType,
                             function (data) {
                               $scope.data = data.data;
                               $scope.labels = data.labels;
@@ -131,9 +133,9 @@
                                 },
                                 series: [
                                   {y: 'steps', axis: 'y', color: '#FF8A00',  type: 'column', label: 'Steps'},
-                                  {y: 'stepsSum', axis: 'y2', color: '#FFE600',  type: 'area', label: 'Steps Sums'}
+                                  {y: 'stepsSum', axis: 'y2', color: '#24FF00',  type: 'area', label: 'Steps Sums'}
                                 ],
-                                lineMode: 'linear', //otestovat
+                                lineMode: 'step-after', //otestovat
                                 tension: 0.7,
                                 tooltip: {mode: 'scrubber', formatter: function(x, y, series) {return y;}},
                                 drawDots: false,

@@ -53,14 +53,9 @@
           andAddThemIf: (conditions) ->
             if !!conditions.all
 
-              if !!conditions.x
-                svg.append('g')
-                  .attr('class', 'x axis')
-                  .attr('transform', 'translate(0,' + height + ')')
-                  .call(xAxis)
-                  .call(style)
-
               if !!conditions.y
+                svg.append('g')
+                  .attr('class', 'y grid')
                 svg.append('g')
                   .attr('class', 'y axis')
                   .call(yAxis)
@@ -68,9 +63,22 @@
 
               if createY2Axis and !!conditions.y2
                 svg.append('g')
+                  .attr('class', 'y2 grid')
+                  .attr('transform', 'translate(' + width + ', 0)')
+                svg.append('g')
                   .attr('class', 'y2 axis')
                   .attr('transform', 'translate(' + width + ', 0)')
                   .call(y2Axis)
+                  .call(style)
+
+              if !!conditions.x
+                svg.append('g')
+                  .attr('class', 'x grid')
+                  .attr('transform', 'translate(0,' + height + ')')
+                svg.append('g')
+                  .attr('class', 'x axis')
+                  .attr('transform', 'translate(0,' + height + ')')
+                  .call(xAxis)
                   .call(style)
 
             return {
@@ -94,6 +102,7 @@
         axis = d3.svg.axis()
           .scale(scale)
           .orient(sides[key])
+          .innerTickSize(4)
           .tickFormat(o?.ticksFormatter)
 
         return axis unless o?
@@ -112,12 +121,37 @@
 
         return axis
 
+      setDefaultStroke: (selection) ->
+        selection
+          .attr('stroke', '#000')
+          .attr('stroke-width', 1)
+          .style('shape-rendering', 'crispEdges')
+
+      setDefaultGrid: (selection) ->
+        selection
+          .attr('stroke', '#eee')
+          .attr('stroke-width', 1)
+          .style('shape-rendering', 'crispEdges')
+
       setScalesDomain: (scales, data, series, svg, options) ->
         this.setXScale(scales.xScale, data, series, options.axes)
 
         axis = svg.selectAll('.x.axis')
           .call(scales.xAxis)
-        
+
+        if options.axes.x.innerTicks?
+          axis.selectAll('.tick>line')
+            .call(this.setDefaultStroke)
+
+        if options.axes.x.grid?
+          height = options.margin.height - options.margin.top - options.margin.bottom
+          xGrid = scales.xAxis
+            .tickSize(-height, 0, 0)
+          grid = svg.selectAll('.x.grid')
+            .call(xGrid)
+          grid.selectAll('.tick>line')
+            .call(this.setDefaultGrid)
+
         if options.axes.x.ticksRotate?
           axis.selectAll('.tick>text')
             .attr('dy', null)
@@ -129,23 +163,47 @@
           scales.yScale.domain(yDomain).nice()
           axis = svg.selectAll('.y.axis')
             .call(scales.yAxis)
-          
+
+          if options.axes.y.innerTicks?
+            axis.selectAll('.tick>line')
+              .call(this.setDefaultStroke)
+
           if options.axes.y.ticksRotate?
             axis.selectAll('.tick>text')
               .attr('transform', 'rotate(' + options.axes.y.ticksRotate + ' -6,0)')
               .style('text-anchor', 'end')
+
+          if options.axes.y.grid?
+            width = options.margin.width - options.margin.left - options.margin.right
+            yGrid = scales.yAxis
+              .tickSize(-width, 0, 0)
+            grid = svg.selectAll('.y.grid')
+              .call(yGrid)
+            grid.selectAll('.tick>line')
+              .call(this.setDefaultGrid)
 
         if (series.filter (s) -> s.axis is 'y2' and s.visible isnt false).length > 0
           y2Domain = this.getVerticalDomain(options, data, series, 'y2')
           scales.y2Scale.domain(y2Domain).nice()
           axis = svg.selectAll('.y2.axis')
             .call(scales.y2Axis)
+          if options.axes.y2.innerTicks?
+            axis.selectAll('.tick>line')
+              .call(this.setDefaultStroke)
           
           if options.axes.y2.ticksRotate?
             axis.selectAll('.tick>text')
               .attr('transform', 'rotate(' + options.axes.y2.ticksRotate + ' 6,0)')
               .style('text-anchor', 'start')
 
+          if options.axes.y2.grid?
+            width = options.margin.width - options.margin.left - options.margin.right
+            y2Grid = scales.y2Axis
+              .tickSize(-width, 0, 0)
+            grid = svg.selectAll('.y2.grid')
+              .call(y2Grid)
+            grid.selectAll('.tick>line')
+              .call(this.setDefaultGrid)
 
       getVerticalDomain: (options, data, series, key) ->
         return [] unless o = options.axes[key]
@@ -203,7 +261,7 @@
         return [minY, maxY]
 
       setXScale: (xScale, data, series, axesOptions) ->
-        domain = this.xExtent(data, axesOptions.x.key)
+        domain = this.xExtent(data, axesOptions.x.key, axesOptions.x.type)
         if series.filter((s) -> s.type is 'column').length
           this.adjustXDomainForColumns(domain, data, axesOptions.x.key)
 
@@ -213,14 +271,16 @@
 
         xScale.domain(domain)
 
-      xExtent: (data, key) ->
+      xExtent: (data, key, type) ->
         [from, to] = d3.extent(data, (d) -> d[key])
 
         if from is to
-          if from > 0
-            return [0, from*2]
+          if type is 'date'
+            # delta of 1 day
+            delta = 24*60*60*1000
+            return [new Date(+from - delta), new Date(+to + delta)]
           else
-            return [from*2, 0]
+            return if from > 0 then [0, from*2] else [from*2, 0]
 
         return [from, to]
 
@@ -228,8 +288,8 @@
         step = this.getAverageStep(data, field)
 
         if angular.isDate(domain[0])
-          domain[0] = new Date(domain[0].getTime() - step)
-          domain[1] = new Date(domain[1].getTime() + step)
+          domain[0] = new Date(+domain[0] - step)
+          domain[1] = new Date(+domain[1] + step)
         else
           domain[0] = domain[0] - step
           domain[1] = domain[1] + step

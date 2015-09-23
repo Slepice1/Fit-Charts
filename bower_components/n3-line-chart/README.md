@@ -48,7 +48,7 @@ Options must be an object with a series array. It should look like this :
 $scope.options = {
   axes: {
     x: {key: 'x', ticksFormat: '.2f', type: 'linear', min: 0, max: 10, ticks: 2},
-    y: {type: 'linear', min: 0, max: 1, ticks: 5},
+    y: {type: 'linear', min: 0, max: 1, ticks: 5, innerTicks: true, grid: true},
     y2: {type: 'linear', min: 0, max: 1, ticks: [1, 2, 3, 4]}
   },
   margin: {
@@ -81,6 +81,9 @@ The `axes` keys can be undefined. Otherwise, it can contain an `x̀` key with th
  + `max` : optional, forces the axis maximum value (default is computed from data)
  + `ticks` : optional, configures the axis' ticks (can be either a number or an array, more on this [here][3])
  + `ticksInterval` : optional, configures the step size of tick values if `ticks` is set to a range or time range function (e.g. d3.time.minute), more on this [here][4]
+ + `innerTicks` : optional, can be either `true` or `false` and displays a small line for every tick when set to `true` (default is `false`)
+ + `grid` : optional, can be either `true` or `false` and displays a grid lines for every tick when set to `true` (default is `false`)
+ + `zoomable` : optional, can be either `true` or `false` and enables zooming and panning for this axes when set to `true` (default is `false`)
 
 It can also contain, according to your series configuration, a `y` and a `y2` key with the following properties :
 
@@ -104,6 +107,29 @@ The `series` key must be an array which contains objects with the following prop
 + `drawDots` : optional, can be either `true` or `false`. Default is true. Defines whether the series is rendered with dots on a per `series` basis. Overrides the global setting.
 + `visible` : optional, can be either `true` or `false`. Default is true. Defines whether the series is initially visible. Will be updated if the series gets hidden or shown through a click on the legend.
 + `dotSize` : optional, must be an numerical value. Default is `2`. Will be ignored if the series type is not `area` or `line`, or if `drawDots` is set to `false`.
+
+##### Stacks
+With the optional `stacks` key one can stack multiple series into a single stacked series. It must contain an array of objects with following properties :
+
++ `series` : mandatory, array containing the series ids of the series that should be stacked together
++ `axis` : optional, the axis on which the new stacked series should be displayed. Valid values are `y` or `y2`. Default is `y`
+
+> Please note, that when using stacks we need to define an `id` identifier on each series that we want to include in a stack.
+
+Here is the example of a stack configuration of column series.
+
+```js
+$scope.options = {
+  stacks: [
+    {axis: 'y', series: ['id_0', 'id_1', 'id_2']}
+  ],
+  series: [
+    {id: 'id_0', y: 'y_0', type: 'column'},
+    {id: 'id_1', y: 'y_1', type: 'column'},
+    {id: 'id_2', y: 'y_2', type: 'column'}
+  ]
+}
+```
 
 ##### Tooltip
 The `tooltip` must be an object which contains the following properties :
@@ -221,11 +247,6 @@ Install dev dependencies :
 $ npm install
 ```
 
-Install components :
-```sh
-$ bower install
-```
-
 Watch :
 ```sh
 $ grunt watch
@@ -238,6 +259,7 @@ $ grunt
 
 Or run the visual tests, too :
 ```sh
+$ pip install pillow
 $ grunt travis
 ```
 
