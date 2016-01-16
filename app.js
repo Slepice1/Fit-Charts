@@ -40,14 +40,15 @@
                       {'userId': 'me', 'dataSourceId': dataType,
                        'datasetId': fromNanosec + '-' + toNanosec}).then(
         function(resp) {
-          if (resp.result.point !== null || resp.result.point !== "undefined") {
+          console.log(resp.point);
+          if (resp.result.point !== null && resp.result.point !== undefined) {
             success(resp.result.point);
           }
           else {
-            error("No data for this timespan");
+            console.error("No data for this timespan");
           }
       },function() {
-          error("Couldn't load data");
+          console.error("Couldn't load data");
       });
     };
     var dataOperations = function (sumForDuration, sum, date, values) {
@@ -119,7 +120,7 @@
         function () {
           var fromDate = moment($scope.fromDate).startOf($scope.timespan);
           var toDate = moment($scope.toDate).endOf($scope.timespan);
-          var dataType = 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps';
+          var dataType = 'derived:com.google.activity.segment:com.urbandroid.sleep:session_activity_segment'/*'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps'*/;
           FitService.getData(fromDate, toDate, moment.duration(1, $scope.timespan), dataType,
                             function (data) {
                               $scope.data = data.data;

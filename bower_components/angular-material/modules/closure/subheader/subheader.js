@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.11.0-master-843d63e
+ * v1.0.1-master-8ef798f
  */
 goog.provide('ng.material.components.subheader');
 goog.require('ng.material.components.sticky');
